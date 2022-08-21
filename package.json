@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
     "generate": "ts-node --transpile-only src/schema.ts",
-    "prisma:migrate": "npx prisma migrate dev --name "
+    "prisma:migrate": "npx prisma migrate dev --name ",
+    "prisma:studio": "npx prisma studio"
   },
   "keywords": [],
   "author": "",

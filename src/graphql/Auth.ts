@@ -1,7 +1,8 @@
 import { extendType, nonNull, objectType, stringArg } from "nexus";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
-import config from "../utils/auth";
+import { APP_SECRET } from "../utils/auth";
+
 
 export const AuthPayload = objectType({
   name: "AuthPayload",
@@ -29,9 +30,7 @@ export const AuthMutation = extendType({
           data: { email, name, password },
         });
 
-        const token = jwt.sign({
-          userId: user.id
-        }, config.APP_SECRET);
+        const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
         return {
           token,
@@ -47,7 +46,7 @@ export const AuthMutation = extendType({
         password: nonNull(stringArg()),
       },
       async resolve(parent, args, context) {
-        const user = await context.prisma.user.findUnique({ where: { email: args.email } })
+        const user = await context.prisma.user.findFirst({ where: { email: args.email } })
 
         if (!user) {
           throw new Error("No such user found");
@@ -59,7 +58,7 @@ export const AuthMutation = extendType({
           throw new Error("Invalid password");
         }
 
-        const token = jwt.sign({ userId: user.id }, config.APP_SECRET);
+        const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
         return {
           token,
